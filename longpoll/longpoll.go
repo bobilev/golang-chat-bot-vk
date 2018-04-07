@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/url"
 	"github.com/bobilev/golang-chat-bot-vk/config"
+	"encoding/json"
 )
 type BotVkApiGroup struct {
 	Access_token string
@@ -32,21 +33,36 @@ func GetGroupID(access_token string) string {
 	q.Add("v", "5.74")
 	url.RawQuery = q.Encode()
 
-	fmt.Println(Call(url.String()))
+
+	jsonGetById := config.ResponseGetById{}
+	Call(url.String(),&jsonGetById)
+
+
+	fmt.Println(jsonGetById.Response)
+	fmt.Println(jsonGetById)
 
 	return "No"
 }
-func Call(urlString string) string {
+func Call(urlString string,result interface{}) string {
 	res, err := http.Get(urlString)
 	defer res.Body.Close()
 
 	if err != nil {
 		log.Fatal(err)
 	}
-	result, err := ioutil.ReadAll(res.Body)
+	resultReq, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		log.Fatal(err)
 	}
-	resultString := fmt.Sprintf("%s", result)
+
+	//jsonGetById := config.ResponseGetById{}
+	jsonRes := []byte(resultReq)
+	json.Unmarshal(jsonRes,result)
+
+	//fmt.Println(jsonGetById.Response[0].Name)
+	//fmt.Println(jsonGetById.Response[0].Id)
+	//fmt.Println(result)
+
+	resultString := fmt.Sprintf("%s", resultReq)
 	return resultString
 }
