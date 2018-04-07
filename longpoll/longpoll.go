@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"fmt"
 	"net/url"
+	"github.com/bobilev/golang-chat-bot-vk/config"
 )
 type BotVkApiGroup struct {
 	Access_token string
@@ -20,9 +21,9 @@ func InitBot(access_token string) *BotVkApiGroup {
 func GetGroupID(access_token string) string {
 	method := "getById"
 	url := &url.URL{
-		Scheme:   "https",
-		Host:     "api.vk.com",
-		Path:     "method/groups.",
+		Scheme:   config.URLScheme,
+		Host:     config.HOST,
+		Path:     config.PATH,
 	}
 
 	url.Path += method
