@@ -9,6 +9,7 @@ import (
 	"github.com/bobilev/golang-chat-bot-vk/config"
 	"encoding/json"
 	"strings"
+	"strconv"
 )
 type BotVkApiGroup struct {
 	Access_token string
@@ -24,7 +25,6 @@ func InitBot(access_token string) *BotVkApiGroup {
 		Host:     config.HOST,
 		Path:     config.PATH,
 	}
-
 
 	bot.GetById = bot.GetGroupID(access_token)
 
@@ -48,10 +48,36 @@ func (bot *BotVkApiGroup) GetGroupID(access_token string) int {
 	method := "getById"
 	urlConfig := bot.constructURL(method)
 
-	jsonGetById := config.ResponseGetById{}
+	jsonGetById := ResponseGetById{}
 	CallMethod(urlConfig,&jsonGetById)
 
 	return jsonGetById.Response[0].Id
+}
+func (bot *BotVkApiGroup) InitLongPollServer(LPC *LongPollConfig) {
+	method := "getLongPollServer"
+	group_id := "group_id=" + strconv.Itoa(bot.GetById)
+	urlConfig := bot.constructURL(method,group_id)
+
+	jsonGetLongPollServer := ResponseGetLongPollServer{}
+	CallMethod(urlConfig,&jsonGetLongPollServer)
+
+	LPC.Key = jsonGetLongPollServer.Response.Key
+	LPC.Server = jsonGetLongPollServer.Response.Server
+	LPC.Ts = jsonGetLongPollServer.Response.Ts
+	LPC.Wait = 25
+}
+func (bot *BotVkApiGroup) StartLongPollServer() {
+	LPC := new(LongPollConfig)
+	bot.InitLongPollServer(LPC)
+
+	//fmt.Println(LPC.Key)
+	//fmt.Println(LPC.Server)
+	//fmt.Println(LPC.Ts)
+	//fmt.Println(LPC.Wait)
+	//LPC.Ts = 2
+	//fmt.Println(LPC.Ts)
+
+
 }
 func CallMethod(url string, result interface{}) {
 	resultReq := Call(url)

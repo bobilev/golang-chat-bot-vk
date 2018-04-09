@@ -27,6 +27,7 @@ func main() {
 	bot := longpoll.InitBot(access_token)
 	fmt.Println(bot.GetById)
 	fmt.Println(bot.Url.Path)
+	bot.StartLongPollServer()
 	////////2 - указывать уровень отображения инфы
 	////////3 - цикл update
 }
