@@ -8,42 +8,58 @@ import (
 	"net/url"
 	"github.com/bobilev/golang-chat-bot-vk/config"
 	"encoding/json"
+	"strings"
 )
 type BotVkApiGroup struct {
 	Access_token string
-	GetById string
+	GetById int
+	Url url.URL
 }
 func InitBot(access_token string) *BotVkApiGroup {
 	bot := new(BotVkApiGroup)
 	bot.Access_token = access_token
-	bot.GetById = GetGroupID(access_token)
-	return bot
-}
-func GetGroupID(access_token string) string {
-	method := "getById"
-	url := &url.URL{
+
+	bot.Url = url.URL{
 		Scheme:   config.URLScheme,
 		Host:     config.HOST,
 		Path:     config.PATH,
 	}
 
-	url.Path += method
-	q := url.Query()
-	q.Set("access_token", access_token)
-	q.Add("v", "5.74")
-	url.RawQuery = q.Encode()
 
+	bot.GetById = bot.GetGroupID(access_token)
+
+	return bot
+}
+func (bot BotVkApiGroup) constructURL(method string,params ...string) string {
+	urlConfig := bot.Url
+	urlConfig.Path += method
+
+	q := urlConfig.Query()
+	q.Set("access_token", bot.Access_token)
+	q.Add("v", "5.74")
+	for _,val := range params {
+		values := strings.Split(val,"=")
+		q.Add(values[0],values[1])
+	}
+	urlConfig.RawQuery = q.Encode()
+	return urlConfig.String()
+}
+func (bot *BotVkApiGroup) GetGroupID(access_token string) int {
+	method := "getById"
+	urlConfig := bot.constructURL(method)
 
 	jsonGetById := config.ResponseGetById{}
-	Call(url.String(),&jsonGetById)
+	CallMethod(urlConfig,&jsonGetById)
 
-
-	fmt.Println(jsonGetById.Response)
-	fmt.Println(jsonGetById)
-
-	return "No"
+	return jsonGetById.Response[0].Id
 }
-func Call(urlString string,result interface{}) string {
+func CallMethod(url string, result interface{}) {
+	resultReq := Call(url)
+
+	jsonRes := []byte(resultReq)
+	json.Unmarshal(jsonRes,result)
+}
+func Call(urlString string,) string {
 	res, err := http.Get(urlString)
 	defer res.Body.Close()
 
@@ -54,14 +70,6 @@ func Call(urlString string,result interface{}) string {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	//jsonGetById := config.ResponseGetById{}
-	jsonRes := []byte(resultReq)
-	json.Unmarshal(jsonRes,result)
-
-	//fmt.Println(jsonGetById.Response[0].Name)
-	//fmt.Println(jsonGetById.Response[0].Id)
-	//fmt.Println(result)
 
 	resultString := fmt.Sprintf("%s", resultReq)
 	return resultString

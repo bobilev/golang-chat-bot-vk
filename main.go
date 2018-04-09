@@ -26,7 +26,7 @@ func main() {
 	////////1 - указывать токен
 	bot := longpoll.InitBot(access_token)
 	fmt.Println(bot.GetById)
-
+	fmt.Println(bot.Url.Path)
 	////////2 - указывать уровень отображения инфы
 	////////3 - цикл update
 }
