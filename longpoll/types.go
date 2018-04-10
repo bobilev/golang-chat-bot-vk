@@ -27,6 +27,7 @@ type GetLongPollServer struct {
 type UpdateLP struct {
 	Ts string
 	Updates []ObjectUpdate
+	Failed int
 }
 type ObjectUpdate struct {
 	Type string

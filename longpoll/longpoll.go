@@ -10,6 +10,7 @@ import (
 	"encoding/json"
 	"strings"
 	"strconv"
+	"time"
 )
 type BotVkApiGroup struct {
 	Access_token string
@@ -19,15 +20,12 @@ type BotVkApiGroup struct {
 func InitBot(access_token string) *BotVkApiGroup {
 	bot := new(BotVkApiGroup)
 	bot.Access_token = access_token
-
 	bot.Url = url.URL{
 		Scheme:   config.URLScheme,
 		Host:     config.HOST,
 		Path:     config.PATH,
 	}
-
-	bot.GetById = bot.GetGroupID(access_token)
-
+	bot.GetById = bot.GetGroupID()
 	return bot
 }
 func (bot BotVkApiGroup) constructURL(method string,params ...string) string {
@@ -44,7 +42,7 @@ func (bot BotVkApiGroup) constructURL(method string,params ...string) string {
 	urlConfig.RawQuery = q.Encode()
 	return urlConfig.String()
 }
-func (bot *BotVkApiGroup) GetGroupID(access_token string) int {
+func (bot *BotVkApiGroup) GetGroupID() int {
 	method := "getById"
 	urlConfig := bot.constructURL(method)
 
@@ -72,13 +70,37 @@ func (bot *BotVkApiGroup) StartLongPollServer() (chan ObjectUpdate) {
 	ch := make(chan ObjectUpdate, 1)
 
 	go func(ch chan ObjectUpdate){
-
 		for {
 			log.Println("New request: TS",LPC.Ts)
 			updateLP := new(UpdateLP)
 
 			connectLPCurl := LPC.Server+"?act=a_check&key="+LPC.Key+"&ts="+strconv.Itoa(LPC.Ts)+"&wait="+strconv.Itoa(LPC.Wait)
-			CallMethod(connectLPCurl,&updateLP)
+			err := CallMethod(connectLPCurl,&updateLP)
+			if err != nil {
+				log.Println("[ERR]CallMethod Reconnect 3 sec\n",err)
+				time.Sleep(time.Second * 3)
+
+				continue
+			}
+			switch updateLP.Failed {
+			case 1: {
+				fmt.Println("Failed:",updateLP.Failed)
+				fmt.Println("Ts:",updateLP.Ts)
+				continue
+			}
+			case 2: {
+
+			}
+			case 3: {
+
+			}
+			default:
+
+			}
+			if updateLP.Ts == "" {
+				continue
+			}
+			fmt.Println("end switch")
 			LPC.Ts , _ = strconv.Atoi(updateLP.Ts)
 
 			for _, update := range updateLP.Updates {
@@ -86,7 +108,6 @@ func (bot *BotVkApiGroup) StartLongPollServer() (chan ObjectUpdate) {
 				ch <- update
 			}
 		}
-	
 	}(ch)
 
 	fmt.Println(LPC.Key)
@@ -95,24 +116,29 @@ func (bot *BotVkApiGroup) StartLongPollServer() (chan ObjectUpdate) {
 	fmt.Println(LPC.Wait)
 	return ch
 }
-func CallMethod(url string, result interface{}) {
-	resultReq := Call(url)
-
+func CallMethod(url string, result interface{}) error {
+	fmt.Println("START[CallMethod]",url)
+	resultReq , err := Call(url)
+	if err != nil {
+		return err
+	}
 	jsonRes := []byte(resultReq)
 	json.Unmarshal(jsonRes,result)
+	return nil
 }
-func Call(urlString string,) string {
+func Call(urlString string) (string, error) {
 	res, err := http.Get(urlString)
 	defer res.Body.Close()
 
 	if err != nil {
-		log.Fatal(err)
+		return "",err
 	}
 	resultReq, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		log.Fatal(err)
+		return "",err
 	}
 
 	resultString := fmt.Sprintf("%s", resultReq)
-	return resultString
+	log.Println("{Call}",resultString)
+	return resultString, nil
 }

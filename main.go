@@ -29,11 +29,11 @@ func main() {
 	updates := bot.StartLongPollServer()
 
 	for update := range updates {
-		//if update.Body != "" {
+		//if update.Body == "" {
 		//	continue
 		//}
 		fmt.Println(update)
-		fmt.Println("Text Message: %s",update.Body)
+		fmt.Println("Text Message:",update.Body)
 	}
 	////////2 - указывать уровень отображения инфы
 	////////3 - цикл update
