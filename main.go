@@ -8,7 +8,7 @@ import (
 
 func main() {
 	//method := "getLongPollServer"
-	access_token := "b25e0478970ebcde8977b7c7b9b8562e28cce81c9f80518b0fa72196fdc0588d833ff6f298a821d12ba18"
+	accessToken := "b25e0478970ebcde8977b7c7b9b8562e28cce81c9f80518b0fa72196fdc0588d833ff6f298a821d12ba18"
 	//url := &url.URL{
 	//	Scheme:   "https",
 	//	Host:     "api.vk.com",
@@ -24,10 +24,17 @@ func main() {
 	//fmt.Println(url)
 
 	////////1 - указывать токен
-	bot := longpoll.InitBot(access_token)
-	fmt.Println(bot.GetById)
-	fmt.Println(bot.Url.Path)
-	bot.StartLongPollServer()
+	bot := longpoll.InitBot(accessToken)
+
+	updates := bot.StartLongPollServer()
+
+	for update := range updates {
+		//if update.Body != "" {
+		//	continue
+		//}
+		fmt.Println(update)
+		fmt.Println("Text Message: %s",update.Body)
+	}
 	////////2 - указывать уровень отображения инфы
 	////////3 - цикл update
 }

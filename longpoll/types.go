@@ -24,3 +24,22 @@ type GetLongPollServer struct {
 	Server string
 	Ts int
 }
+type UpdateLP struct {
+	Ts string
+	Updates []ObjectUpdate
+}
+type ObjectUpdate struct {
+	Type string
+	Update `json:"object"`
+	GroupId int `json:"group_id"`
+}
+type Update struct {
+	Id int
+	Date int
+	Out int
+	UserId int `json:"user_id"`
+	ReadState int `json:"read_state"`
+	Title string
+	Body string
+}
+//type UpdatesChannel <-chan ObjectUpdate

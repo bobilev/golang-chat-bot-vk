@@ -66,18 +66,34 @@ func (bot *BotVkApiGroup) InitLongPollServer(LPC *LongPollConfig) {
 	LPC.Ts = jsonGetLongPollServer.Response.Ts
 	LPC.Wait = 25
 }
-func (bot *BotVkApiGroup) StartLongPollServer() {
+func (bot *BotVkApiGroup) StartLongPollServer() (chan ObjectUpdate) {
 	LPC := new(LongPollConfig)
 	bot.InitLongPollServer(LPC)
+	ch := make(chan ObjectUpdate, 1)
 
-	//fmt.Println(LPC.Key)
-	//fmt.Println(LPC.Server)
-	//fmt.Println(LPC.Ts)
-	//fmt.Println(LPC.Wait)
-	//LPC.Ts = 2
-	//fmt.Println(LPC.Ts)
+	go func(ch chan ObjectUpdate){
 
+		for {
+			log.Println("New request: TS",LPC.Ts)
+			updateLP := new(UpdateLP)
 
+			connectLPCurl := LPC.Server+"?act=a_check&key="+LPC.Key+"&ts="+strconv.Itoa(LPC.Ts)+"&wait="+strconv.Itoa(LPC.Wait)
+			CallMethod(connectLPCurl,&updateLP)
+			LPC.Ts , _ = strconv.Atoi(updateLP.Ts)
+
+			for _, update := range updateLP.Updates {
+				fmt.Println("ch <- update",update)
+				ch <- update
+			}
+		}
+	
+	}(ch)
+
+	fmt.Println(LPC.Key)
+	fmt.Println(LPC.Server)
+	fmt.Println(LPC.Ts)
+	fmt.Println(LPC.Wait)
+	return ch
 }
 func CallMethod(url string, result interface{}) {
 	resultReq := Call(url)
