@@ -14,21 +14,17 @@ func main() {
 	updates := bot.StartLongPollServer()
 
 	for update := range updates {
-		//if update.Body == "" {
-		//	continue
-		//}
+		fmt.Println("UserID:",update.UserId,"Text Message:",update.Body)
 		if update.Body == "hi" {
 			res , _ := bot.SendMessage(update.UserId,"Hello")
 			fmt.Println("[res]",res.MessageID)
 		}
 		if update.Body == "sex" {
-			res , _ := bot.SendPhoto(update.UserId,456239017,"секси эльфийка")
+			res , _ := bot.SendDoc(update.UserId,"photo",456239017,"секси эльфийка")
 			fmt.Println("[res]",res.MessageID)
 		}
-		fmt.Println(update)
-		fmt.Println("Text Message:",update.Body)
+
 	}
 	////////2 - указывать уровень отображения инфы
 	////////3 - цикл update
 }
-
