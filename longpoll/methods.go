@@ -16,13 +16,22 @@ func (bot *BotVkApiGroup) SendMessage(userid int,text string) (ResSendMessage,er
 
 	return jsonResSendMessage,nil
 }
-func (bot *BotVkApiGroup) SendPhoto(userid int,mediaId int,text string) (ResSendMessage,error) {
+/* SendDoc принимает параметром typeDoc одним из ниже перечисленных
+typeDoc (
+ 	photo — фотография;
+ 	video — видеозапись;
+ 	audio — аудиозапись;
+ 	doc — документ;
+ 	wall — запись на стене;
+ 	market — товар.
+}
+*/
+func (bot *BotVkApiGroup) SendDoc(userId int,typeDoc string,mediaId int,text string) (ResSendMessage,error) {
 	var urlConfig string
 	method := "messages.send"
-	typeDoc := "photo-"
-	attachment := typeDoc + strconv.Itoa(bot.GetById)+"_"+strconv.Itoa(mediaId)//<type><owner_id>_<media_id>
+	attachment := typeDoc +"-"+ strconv.Itoa(bot.GetById)+"_"+strconv.Itoa(mediaId)//<type><owner_id>_<media_id>
 	paramAttachment := "attachment="+attachment
-	paramUserId := "user_id="+strconv.Itoa(userid)
+	paramUserId := "user_id="+strconv.Itoa(userId)
 	if text != "" {
 		paramMessage := "message="+text
 		urlConfig = bot.constructURL(method,paramUserId,paramAttachment,paramMessage)
