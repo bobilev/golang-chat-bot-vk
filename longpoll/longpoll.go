@@ -82,22 +82,13 @@ func (bot *BotVkApiGroup) StartLongPollServer() (chan ObjectUpdate) {
 
 				continue
 			}
-			switch updateLP.Failed {
-			case 1: {
+			if updateLP.Failed == 1 || updateLP.Ts == "" {
 				fmt.Println("Failed:",updateLP.Failed)
 				fmt.Println("Ts:",updateLP.Ts)
 				continue
-			}
-			case 2: {
-
-			}
-			case 3: {
-
-			}
-			default:
-
-			}
-			if updateLP.Ts == "" {
+			} else if updateLP.Failed == 2 || updateLP.Failed == 3 {
+				fmt.Println("Failed:",updateLP.Failed)
+				bot.InitLongPollServer(LPC)
 				continue
 			}
 			fmt.Println("end switch")
