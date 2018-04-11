@@ -2,7 +2,7 @@ package longpoll
 
 import "strconv"
 
-func (bot *BotVkApiGroup) SendMessage(userid int,text string) error {
+func (bot *BotVkApiGroup) SendMessage(userid int,text string) (ResSendMessage,error) {
 	method := "messages.send"
 	paramUserId := "user_id="+strconv.Itoa(userid)
 	paramMessage := "message="+text
@@ -11,7 +11,33 @@ func (bot *BotVkApiGroup) SendMessage(userid int,text string) error {
 	jsonResSendMessage := ResSendMessage{}
 	err := CallMethod(urlConfig,&jsonResSendMessage)//err
 	if err != nil {
-		return err
+		return jsonResSendMessage,err
 	}
-	return nil
+
+	return jsonResSendMessage,nil
 }
+func (bot *BotVkApiGroup) SendPhoto(userid int,mediaId int,text string) (ResSendMessage,error) {
+	var urlConfig string
+	method := "messages.send"
+	typeDoc := "photo-"
+	attachment := typeDoc + strconv.Itoa(bot.GetById)+"_"+strconv.Itoa(mediaId)//<type><owner_id>_<media_id>
+	paramAttachment := "attachment="+attachment
+	paramUserId := "user_id="+strconv.Itoa(userid)
+	if text != "" {
+		paramMessage := "message="+text
+		urlConfig = bot.constructURL(method,paramUserId,paramAttachment,paramMessage)
+	} else {
+		urlConfig = bot.constructURL(method,paramUserId,paramAttachment)
+	}
+
+	jsonResSendMessage := ResSendMessage{}
+	err := CallMethod(urlConfig,&jsonResSendMessage)//err
+	if err != nil {
+		return jsonResSendMessage,err
+	}
+	return jsonResSendMessage,nil
+}
+func DeleteMessage() {}
+func RestoreMessage() {}
+func DeleteDialog() {}
+func SetActivity() {}

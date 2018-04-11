@@ -18,8 +18,12 @@ func main() {
 		//	continue
 		//}
 		if update.Body == "hi" {
-			bot.SendMessage(update.UserId,"Hello")
-
+			res , _ := bot.SendMessage(update.UserId,"Hello")
+			fmt.Println("[res]",res.MessageID)
+		}
+		if update.Body == "sex" {
+			res , _ := bot.SendPhoto(update.UserId,456239017,"секси эльфийка")
+			fmt.Println("[res]",res.MessageID)
 		}
 		fmt.Println(update)
 		fmt.Println("Text Message:",update.Body)

@@ -45,7 +45,5 @@ type Update struct {
 }
 //type UpdatesChannel <-chan ObjectUpdate
 type ResSendMessage struct {
-	PeerId    int  `json:"peer_id"`    //идентификатор назначения;
-	MessageId int  `json:"message_id"` //идентификатор сообщения;
-	Error     int                      //сообщение
+	MessageID  int  `json:"кesponse"`//идентификатор сообщения;
 }
