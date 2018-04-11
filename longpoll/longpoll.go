@@ -43,7 +43,7 @@ func (bot BotVkApiGroup) constructURL(method string,params ...string) string {
 	return urlConfig.String()
 }
 func (bot *BotVkApiGroup) GetGroupID() int {
-	method := "getById"
+	method := "groups.getById"
 	urlConfig := bot.constructURL(method)
 
 	jsonGetById := ResponseGetById{}
@@ -52,7 +52,7 @@ func (bot *BotVkApiGroup) GetGroupID() int {
 	return jsonGetById.Response[0].Id
 }
 func (bot *BotVkApiGroup) InitLongPollServer(LPC *LongPollConfig) {
-	method := "getLongPollServer"
+	method := "groups.getLongPollServer"
 	group_id := "group_id=" + strconv.Itoa(bot.GetById)
 	urlConfig := bot.constructURL(method,group_id)
 
