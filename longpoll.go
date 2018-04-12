@@ -1,11 +1,10 @@
-package longpoll
+package main
 
 import (
 	"net/http"
 	"io/ioutil"
 	"fmt"
 	"net/url"
-	"github.com/bobilev/golang-chat-bot-vk/config"
 	"encoding/json"
 	"strings"
 	"strconv"
@@ -22,9 +21,9 @@ func InitBot(accessToken string) *BotVkApiGroup {
 	bot := new(BotVkApiGroup)
 	bot.AccessToken = accessToken
 	bot.Url = url.URL{
-		Scheme:   config.URLScheme,
-		Host:     config.HOST,
-		Path:     config.PATH,
+		Scheme:   "https",
+		Host:     "api.vk.com",
+		Path:     "method/",
 	}
 	bot.GetById = bot.GetGroupID()
 	return bot

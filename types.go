@@ -1,4 +1,4 @@
-package longpoll
+package main
 
 
 type LongPollConfig struct {
