@@ -9,7 +9,7 @@ func (bot *BotVkApiGroup) SendMessage(userid int,text string) (ResSendMessage,er
 	urlConfig := bot.constructURL(method,paramUserId,paramMessage)
 
 	jsonResSendMessage := ResSendMessage{}
-	err := CallMethod(urlConfig,&jsonResSendMessage)//err
+	err := bot.CallMethod(urlConfig,&jsonResSendMessage)//err
 	if err != nil {
 		return jsonResSendMessage,err
 	}
@@ -40,7 +40,7 @@ func (bot *BotVkApiGroup) SendDoc(userId int,typeDoc string,mediaId int,text str
 	}
 
 	jsonResSendMessage := ResSendMessage{}
-	err := CallMethod(urlConfig,&jsonResSendMessage)//err
+	err := bot.CallMethod(urlConfig,&jsonResSendMessage)//err
 	if err != nil {
 		return jsonResSendMessage,err
 	}

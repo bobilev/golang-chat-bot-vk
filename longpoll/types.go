@@ -45,5 +45,5 @@ type Update struct {
 }
 //type UpdatesChannel <-chan ObjectUpdate
 type ResSendMessage struct {
-	MessageID  int  `json:"кesponse"`//идентификатор сообщения;
+	MessageID  int  `json:"response"`//идентификатор сообщения;
 }
