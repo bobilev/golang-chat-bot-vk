@@ -1,4 +1,4 @@
-package main
+package vkchatbot
 
 
 type LongPollConfig struct {
