@@ -65,3 +65,7 @@ type Update struct {
 type ResSendMessage struct {
 	MessageID  int  `json:"response"`//идентификатор сообщения;
 }
+type Attachment struct {
+	MediaId int
+	TypeDoc string
+}

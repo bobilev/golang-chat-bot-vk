@@ -29,11 +29,32 @@ typeDoc (
  	market — товар.
 }
 */
-func (bot *BotVkApiGroup) SendDoc(userId int,typeDoc string,mediaId int,text string) (ResSendMessage,error) {
+func (bot *BotVkApiGroup) SendDoc(userId int,attachment Attachment,text string) (ResSendMessage,error) {
 	var urlConfig url.URL
 	method := "messages.send"
-	attachment := typeDoc +"-"+ strconv.Itoa(bot.GetById)+"_"+strconv.Itoa(mediaId)//<type><owner_id>_<media_id>
-	paramAttachment := "attachment="+attachment
+	paramAttachment := "attachment="+attachment.TypeDoc +"-"+ strconv.Itoa(bot.GetById)+"_"+strconv.Itoa(attachment.MediaId)//<type><owner_id>_<media_id>
+	paramUserId := "user_id="+strconv.Itoa(userId)
+	if text != "" {
+		paramMessage := "message="+text
+		urlConfig = bot.constructURL(method,paramUserId,paramAttachment,paramMessage)
+	} else {
+		urlConfig = bot.constructURL(method,paramUserId,paramAttachment)
+	}
+
+	jsonResSendMessage := ResSendMessage{}
+	err := bot.CallMethod(urlConfig,&jsonResSendMessage)//err
+	if err != nil {
+		return jsonResSendMessage,err
+	}
+	return jsonResSendMessage,nil
+}
+func (bot *BotVkApiGroup) SendDocs(userId int,attachment []Attachment,text string) (ResSendMessage,error) {
+	var urlConfig url.URL
+	method := "messages.send"
+	paramAttachment := "attachment="
+	for _,attach := range attachment {
+		paramAttachment += attach.TypeDoc +"-"+ strconv.Itoa(bot.GetById)+"_"+strconv.Itoa(attach.MediaId)+","
+	}
 	paramUserId := "user_id="+strconv.Itoa(userId)
 	if text != "" {
 		paramMessage := "message="+text
