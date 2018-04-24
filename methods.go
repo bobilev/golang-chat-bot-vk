@@ -1,6 +1,9 @@
 package vkchatbot
 
-import "strconv"
+import (
+	"strconv"
+	"net/url"
+)
 
 func (bot *BotVkApiGroup) SendMessage(userid int,text string) (ResSendMessage,error) {
 	method := "messages.send"
@@ -27,7 +30,7 @@ typeDoc (
 }
 */
 func (bot *BotVkApiGroup) SendDoc(userId int,typeDoc string,mediaId int,text string) (ResSendMessage,error) {
-	var urlConfig string
+	var urlConfig url.URL
 	method := "messages.send"
 	attachment := typeDoc +"-"+ strconv.Itoa(bot.GetById)+"_"+strconv.Itoa(mediaId)//<type><owner_id>_<media_id>
 	paramAttachment := "attachment="+attachment

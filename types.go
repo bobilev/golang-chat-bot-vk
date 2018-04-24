@@ -1,11 +1,30 @@
 package vkchatbot
 
+import (
+	"net/url"
+	"strconv"
+)
 
 type LongPollConfig struct {
 	Key string
 	Server string
 	Ts int
 	Wait int
+}
+func (LPC *LongPollConfig) ConstructURL() url.URL{
+	Url := url.URL{
+		Host:     LPC.Server,
+	}
+	q := Url.Query()
+	q.Set("act", "a_check")
+	q.Add("key", LPC.Key)
+	q.Add("ts", strconv.Itoa(LPC.Ts))
+	q.Add("wait", strconv.Itoa(LPC.Wait))
+
+	Url.RawQuery = q.Encode()
+	//fmt.Println("++++++",q)
+	//fmt.Println("------",Url.Query())
+	return Url
 }
 type ResponseGetById struct {
 	Response []GetById `json:"response"`

@@ -21,14 +21,13 @@ func InitBot(accessToken string) *BotVkApiGroup {
 	bot := new(BotVkApiGroup)
 	bot.AccessToken = accessToken
 	bot.Url = url.URL{
-		Scheme:   "https",
-		Host:     "api.vk.com",
-		Path:     "method/",
+		Host:     "https://api.vk.com",
+		Path:     "/method/",
 	}
 	bot.GetById = bot.GetGroupID()
 	return bot
 }
-func (bot BotVkApiGroup) constructURL(method string,params ...string) string {
+func (bot BotVkApiGroup) constructURL(method string,params ...string) url.URL {
 	urlConfig := bot.Url
 	urlConfig.Path += method
 
@@ -40,7 +39,9 @@ func (bot BotVkApiGroup) constructURL(method string,params ...string) string {
 		q.Add(values[0],values[1])
 	}
 	urlConfig.RawQuery = q.Encode()
-	return urlConfig.String()
+	//fmt.Println("++++++",q)
+	//fmt.Println("------",urlConfig.Query())
+	return urlConfig
 }
 func (bot *BotVkApiGroup) GetGroupID() int {
 	method := "groups.getById"
@@ -73,8 +74,7 @@ func (bot *BotVkApiGroup) StartLongPollServer() (chan ObjectUpdate) {
 		for {
 			updateLP := new(UpdateLP)
 
-			connectLPCurl := LPC.Server+"?act=a_check&key="+LPC.Key+"&ts="+strconv.Itoa(LPC.Ts)+"&wait="+strconv.Itoa(LPC.Wait)
-			err := bot.CallMethod(connectLPCurl,&updateLP)
+			err := bot.CallMethod(LPC.ConstructURL(),&updateLP)
 			if err != nil {
 				log.Println("[ERR]CallMethod Reconnect 3 sec\n",err)
 				time.Sleep(time.Second * 3)
@@ -99,7 +99,7 @@ func (bot *BotVkApiGroup) StartLongPollServer() (chan ObjectUpdate) {
 
 	return ch
 }
-func (bot BotVkApiGroup) CallMethod(url string, result interface{}) error {
+func (bot BotVkApiGroup) CallMethod(url url.URL, result interface{}) error {
 	resultReq , err := Call(url)
 	switch bot.Log {
 	case 1:
@@ -115,13 +115,20 @@ func (bot BotVkApiGroup) CallMethod(url string, result interface{}) error {
 	json.Unmarshal(jsonRes,result)
 	return nil
 }
-func Call(urlString string) (string, error) {
-	res, err := http.Get(urlString)
-	defer res.Body.Close()
+func Call(url url.URL) (string, error) {
+	fmt.Println(url)
+	fmt.Println(url.Query())
+	//res, err := http.Get(urlString)
+	urlString := url.Host+url.Path
+	fmt.Println("urlString",urlString)
+	res, err := http.PostForm(urlString,url.Query())
+	fmt.Println(res)
+	//res.Header.Set()
 
 	if err != nil {
 		return "",err
 	}
+	defer res.Body.Close()
 	resultReq, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return "",err
