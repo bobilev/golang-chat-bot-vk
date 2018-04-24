@@ -39,8 +39,7 @@ func (bot BotVkApiGroup) constructURL(method string,params ...string) url.URL {
 		q.Add(values[0],values[1])
 	}
 	urlConfig.RawQuery = q.Encode()
-	//fmt.Println("++++++",q)
-	//fmt.Println("------",urlConfig.Query())
+
 	return urlConfig
 }
 func (bot *BotVkApiGroup) GetGroupID() int {
@@ -100,14 +99,8 @@ func (bot *BotVkApiGroup) StartLongPollServer() (chan ObjectUpdate) {
 	return ch
 }
 func (bot BotVkApiGroup) CallMethod(url url.URL, result interface{}) error {
-	resultReq , err := Call(url)
-	switch bot.Log {
-	case 1:
-		log.Println("[Respons]",resultReq)
-	case 2:
-		log.Println("[Request]",url)
-		log.Println("[Respons]",resultReq)
-	}
+	resultReq , err := bot.Call(url)
+
 	if err != nil {
 		return err
 	}
@@ -115,15 +108,9 @@ func (bot BotVkApiGroup) CallMethod(url url.URL, result interface{}) error {
 	json.Unmarshal(jsonRes,result)
 	return nil
 }
-func Call(url url.URL) (string, error) {
-	fmt.Println(url)
-	fmt.Println(url.Query())
-	//res, err := http.Get(urlString)
+func (bot BotVkApiGroup) Call(url url.URL) (string, error) {
 	urlString := url.Host+url.Path
-	fmt.Println("urlString",urlString)
 	res, err := http.PostForm(urlString,url.Query())
-	fmt.Println(res)
-	//res.Header.Set()
 
 	if err != nil {
 		return "",err
@@ -135,5 +122,18 @@ func Call(url url.URL) (string, error) {
 	}
 
 	resultString := strings.Replace(fmt.Sprintf("%s", resultReq),"\n","",-1)
+	switch bot.Log {
+	case 1:
+		fmt.Println()
+		log.Println("[Respons]",resultString)
+	case 2:
+		fmt.Println()
+		log.Println("[Request]",urlString,"\n[Request Values]",url.Query())
+		log.Println("[Respons]",resultString)
+	case 3:
+		fmt.Println()
+		log.Println("[Request]",urlString,"\n[Request Values]",url.Query())
+		log.Println("[Respons]",resultString,"\n[Respons HTML]",res)
+	}
 	return resultString, nil
 }

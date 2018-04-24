@@ -22,8 +22,7 @@ func (LPC *LongPollConfig) ConstructURL() url.URL{
 	q.Add("wait", strconv.Itoa(LPC.Wait))
 
 	Url.RawQuery = q.Encode()
-	//fmt.Println("++++++",q)
-	//fmt.Println("------",Url.Query())
+
 	return Url
 }
 type ResponseGetById struct {
