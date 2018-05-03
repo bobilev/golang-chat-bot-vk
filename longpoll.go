@@ -80,17 +80,19 @@ func (bot *BotVkApiGroup) StartLongPollServer() (chan ObjectUpdate) {
 				time.Sleep(time.Second * 3)
 				continue
 			}
-			if updateLP.Failed == 1 || updateLP.Ts == "" {
-				continue
-			} else if updateLP.Failed == 2 || updateLP.Failed == 3 {
-				if bot.Log == 1 {
-					log.Println("[Failed:",updateLP.Failed,"] ReInitLongPollServer")
-				}
+
+			if updateLP.Failed == 2 || updateLP.Failed == 3 {
+				log.Println("[Failed:",updateLP.Failed,"] ReInitLongPollServer")
+
 				bot.InitLongPollServer(LPC)
+				time.Sleep(time.Second * 3)
+				continue
+			}
+			if updateLP.Failed == 1 || updateLP.Ts == "" {
+				time.Sleep(time.Second * 3)
 				continue
 			}
 			LPC.Ts , _ = strconv.Atoi(updateLP.Ts)
-
 			for _, update := range updateLP.Updates {
 				ch <- update
 			}
