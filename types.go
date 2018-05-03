@@ -68,4 +68,5 @@ type ResSendMessage struct {
 type Attachment struct {
 	MediaId int
 	TypeDoc string
+	OwnerId int
 }

@@ -32,7 +32,7 @@ typeDoc (
 func (bot *BotVkApiGroup) SendDoc(userId int,attachment Attachment,text string) (ResSendMessage,error) {
 	var urlConfig url.URL
 	method := "messages.send"
-	paramAttachment := "attachment="+attachment.TypeDoc +"-"+ strconv.Itoa(bot.GetById)+"_"+strconv.Itoa(attachment.MediaId)//<type><owner_id>_<media_id>
+	paramAttachment := "attachment="+attachment.TypeDoc +"-"+ strconv.Itoa(attachment.OwnerId)+"_"+strconv.Itoa(attachment.MediaId)//<type><owner_id>_<media_id>
 	paramUserId := "user_id="+strconv.Itoa(userId)
 	if text != "" {
 		paramMessage := "message="+text
@@ -53,7 +53,7 @@ func (bot *BotVkApiGroup) SendDocs(userId int,attachment []Attachment,text strin
 	method := "messages.send"
 	paramAttachment := "attachment="
 	for _,attach := range attachment {
-		paramAttachment += attach.TypeDoc +"-"+ strconv.Itoa(bot.GetById)+"_"+strconv.Itoa(attach.MediaId)+","
+		paramAttachment += attach.TypeDoc +"-"+ strconv.Itoa(attach.OwnerId)+"_"+strconv.Itoa(attach.MediaId)+","
 	}
 	paramUserId := "user_id="+strconv.Itoa(userId)
 	if text != "" {

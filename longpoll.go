@@ -13,6 +13,7 @@ import (
 )
 type BotVkApiGroup struct {
 	AccessToken string
+	AccessTokenStore string
 	GetById int
 	Log int
 	Url url.URL
