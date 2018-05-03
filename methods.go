@@ -32,7 +32,9 @@ typeDoc (
 func (bot *BotVkApiGroup) SendDoc(userId int,attachment Attachment,text string) (ResSendMessage,error) {
 	var urlConfig url.URL
 	method := "messages.send"
-	paramAttachment := "attachment="+attachment.TypeDoc +"-"+ strconv.Itoa(attachment.OwnerId)+"_"+strconv.Itoa(attachment.MediaId)//<type><owner_id>_<media_id>
+	accessKey := ""
+	if attachment.AccessKey != "" {accessKey = "_"+attachment.AccessKey}
+	paramAttachment := "attachment="+attachment.TypeDoc +"-"+ strconv.Itoa(attachment.OwnerId)+"_"+strconv.Itoa(attachment.MediaId)+accessKey//<type><owner_id>_<media_id>_<access_key>
 	paramUserId := "user_id="+strconv.Itoa(userId)
 	if text != "" {
 		paramMessage := "message="+text
@@ -53,7 +55,9 @@ func (bot *BotVkApiGroup) SendDocs(userId int,attachment []Attachment,text strin
 	method := "messages.send"
 	paramAttachment := "attachment="
 	for _,attach := range attachment {
-		paramAttachment += attach.TypeDoc +"-"+ strconv.Itoa(attach.OwnerId)+"_"+strconv.Itoa(attach.MediaId)+","
+		accessKey := ""
+		if attach.AccessKey != "" {accessKey = "_"+attach.AccessKey}
+		paramAttachment += attach.TypeDoc +"-"+ strconv.Itoa(attach.OwnerId)+"_"+strconv.Itoa(attach.MediaId)+accessKey+","
 	}
 	paramUserId := "user_id="+strconv.Itoa(userId)
 	if text != "" {

@@ -69,4 +69,5 @@ type Attachment struct {
 	MediaId int
 	TypeDoc string
 	OwnerId int
+	AccessKey string
 }
