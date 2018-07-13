@@ -22,7 +22,13 @@ func main() {
 			fmt.Println("[res]",res.MessageID)
 		}
 		if update.Body == "sex" {
-			res , _ := bot.SendDoc(update.UserId,"photo",456239017,"секси эльфийка")
+		    var Attach vkchatbot.Attachment
+            Attach.TypeDoc = "photo"       //Тип документа photo,video,audio,doc,wall,market
+            Attach.MediaId = 123456789     // id документа
+            Attach.OwnerId = 123456789     // id группы владельца документа
+            Attach.AccessKey = "AccessKey" // AccessKey документа (пригодится если группа закрытая)
+
+			res , _ := bot.SendDoc(update.UserId,Attach,"секси эльфийка")
 			fmt.Println("[res]",res.MessageID)
 		}
 
