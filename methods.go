@@ -1,15 +1,19 @@
 package vkchatbot
 
 import (
+	"math/rand"
 	"strconv"
 	"net/url"
+	"time"
 )
 
 func (bot *BotVkApiGroup) SendMessage(userid int,text string) (ResSendMessage,error) {
 	method := "messages.send"
 	paramUserId := "user_id="+strconv.Itoa(userid)
 	paramMessage := "message="+text
-	urlConfig := bot.constructURL(method,paramUserId,paramMessage)
+	rand.Seed(time.Now().UTC().UnixNano())
+	paramRandomId := "random_id="+strconv.Itoa(int(rand.Int31()))
+	urlConfig := bot.constructURL(method,paramUserId,paramMessage,paramRandomId)
 
 	jsonResSendMessage := ResSendMessage{}
 	err := bot.CallMethod(urlConfig,&jsonResSendMessage)//err

@@ -34,7 +34,7 @@ func (bot BotVkApiGroup) constructURL(method string,params ...string) url.URL {
 
 	q := urlConfig.Query()
 	q.Set("access_token", bot.AccessToken)
-	q.Add("v", "5.74")
+	q.Add("v", "5.92")
 	for _,val := range params {
 		values := strings.Split(val,"=")
 		q.Add(values[0],values[1])
@@ -92,7 +92,7 @@ func (bot *BotVkApiGroup) StartLongPollServer() (chan ObjectUpdate) {
 				time.Sleep(time.Second * 3)
 				continue
 			}
-			LPC.Ts , _ = strconv.Atoi(updateLP.Ts)
+			LPC.Ts  = updateLP.Ts
 			for _, update := range updateLP.Updates {
 				ch <- update
 			}
@@ -114,7 +114,8 @@ func (bot BotVkApiGroup) CallMethod(url url.URL, result interface{}) error {
 func (bot BotVkApiGroup) Call(url url.URL) (string, error) {
 	urlString := url.Host+url.Path
 	res, err := http.PostForm(urlString,url.Query())
-
+	fmt.Println("urlString",urlString)
+	fmt.Println("url.Query()",url.Query())
 	if err != nil {
 		return "",err
 	}
