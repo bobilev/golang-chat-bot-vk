@@ -6,10 +6,10 @@ import (
 )
 
 type LongPollConfig struct {
-	Key string
+	Key    string
 	Server string
-	Ts string
-	Wait int
+	Ts     string
+	Wait   int
 }
 func (LPC *LongPollConfig) ConstructURL() url.URL{
 	Url := url.URL{
@@ -27,10 +27,9 @@ func (LPC *LongPollConfig) ConstructURL() url.URL{
 }
 type ResponseGetById struct {
 	Response []GetById `json:"response"`
-
 }
 type GetById struct {
-	Id int `json:"id"`
+	Id   int    `json:"id"`
 	Name string `json:"name"`
 }
 
@@ -38,18 +37,17 @@ type ResponseGetLongPollServer struct {
 	Response GetLongPollServer
 }
 type GetLongPollServer struct {
-	Key string
+	Key    string
 	Server string
-	Ts string
+	Ts     string
 }
 type UpdateLP struct {
-	Ts string
+	Ts      string
 	Updates []ObjectUpdate
-	Failed int
+	Failed  int
 }
 type ObjectUpdate struct {
 	Type string
-	//Update `json:"object"`
 	Object struct {
 		Date      int    `json:"date"`
 		FromId    int    `json:"from_id"`
@@ -63,26 +61,16 @@ type ObjectUpdate struct {
 		//attachments	[]
 		IsHidden  bool   `json:"is_hidden"`
 		ConversationMessageId int `json:"conversation_message_id"`
-
 	} `json:"object"`
 	GroupId int `json:"group_id"`
-}
-type Update struct {
-	Id int
-	Date int
-	Out int
-	UserId int `json:"user_id"`
-	ReadState int `json:"read_state"`
-	Title string
-	Body string
 }
 //type UpdatesChannel <-chan ObjectUpdate
 type ResSendMessage struct {
 	MessageID  int  `json:"response"`//идентификатор сообщения;
 }
 type Attachment struct {
-	MediaId int
-	TypeDoc string
-	OwnerId int
+	MediaId   int
+	TypeDoc   string
+	OwnerId   int
 	AccessKey string
 }

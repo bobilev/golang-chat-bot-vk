@@ -12,11 +12,11 @@ import (
 	"log"
 )
 type BotVkApiGroup struct {
-	AccessToken string
+	AccessToken      string
 	AccessTokenStore string
-	GetById int
-	Log int
-	Url url.URL
+	GetById          int
+	Log              int
+	Url              url.URL
 }
 func InitBot(accessToken string) *BotVkApiGroup {
 	bot := new(BotVkApiGroup)
@@ -44,7 +44,7 @@ func (bot BotVkApiGroup) constructURL(method string,params ...string) url.URL {
 	return urlConfig
 }
 func (bot *BotVkApiGroup) GetGroupID() int {
-	method := "groups.getById"
+	method    := "groups.getById"
 	urlConfig := bot.constructURL(method)
 
 	jsonGetById := ResponseGetById{}
@@ -53,17 +53,17 @@ func (bot *BotVkApiGroup) GetGroupID() int {
 	return jsonGetById.Response[0].Id
 }
 func (bot *BotVkApiGroup) InitLongPollServer(LPC *LongPollConfig) {
-	method := "groups.getLongPollServer"
-	groupId := "group_id=" + strconv.Itoa(bot.GetById)
+	method    := "groups.getLongPollServer"
+	groupId   := "group_id=" + strconv.Itoa(bot.GetById)
 	urlConfig := bot.constructURL(method,groupId)
 
 	jsonGetLongPollServer := ResponseGetLongPollServer{}
 	bot.CallMethod(urlConfig,&jsonGetLongPollServer)
 
-	LPC.Key = jsonGetLongPollServer.Response.Key
+	LPC.Key    = jsonGetLongPollServer.Response.Key
 	LPC.Server = jsonGetLongPollServer.Response.Server
-	LPC.Ts = jsonGetLongPollServer.Response.Ts
-	LPC.Wait = 25
+	LPC.Ts     = jsonGetLongPollServer.Response.Ts
+	LPC.Wait   = 25
 }
 func (bot *BotVkApiGroup) StartLongPollServer() (chan ObjectUpdate) {
 	LPC := new(LongPollConfig)
