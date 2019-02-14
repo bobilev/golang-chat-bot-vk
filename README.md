@@ -5,7 +5,7 @@ package main
 
 import (
     "github.com/bobilev/golang-chat-bot-vk"
-	"fmt"
+    "fmt"
 )
 
 func main() {

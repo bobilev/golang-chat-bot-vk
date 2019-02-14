@@ -82,3 +82,15 @@ func DeleteMessage() {}
 func RestoreMessage() {}
 func DeleteDialog() {}
 func SetActivity() {}
+func (bot *BotVkApiGroup) UtilResolveScreenName(screenName string) (int,error) {
+	var urlConfig url.URL
+	method := "utils.resolveScreenName"
+	paramScreenName := "screen_name="+screenName
+	urlConfig = bot.constructURL(method,paramScreenName)
+	resResolveScreenName := ResResolveScreenName{}
+	err := bot.CallMethod(urlConfig,&resResolveScreenName)//err
+	if err != nil {
+		return 0,err
+	}
+	return resResolveScreenName.Response.ObjectId,nil
+}

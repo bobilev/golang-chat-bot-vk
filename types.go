@@ -74,3 +74,10 @@ type Attachment struct {
 	OwnerId   int
 	AccessKey string
 }
+//method = utils.resolveScreenName
+type ResResolveScreenName struct {
+	Response struct {
+		Type     string `json:"type"`
+		ObjectId int    `json:"object_id"`
+	} `json:"response"`
+}
